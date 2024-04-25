@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Obtener URL origen</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column; /* Alineamos elementos en columna */
+      align-items: center;
+      background-image: url('./bg-2.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      min-height: 100vh; /* Altura mínima para que se extienda al 100% de la ventana */
+    }
+
+    #header-wrapper {
+      background: transparent url(//3.bp.blogspot.com/_66wIGDjagHk/Siu81fO0RrI/AAAAAAAAAi0/0gVEgpIwIRo/s1600/header.jpg) no-repeat scroll 0 0;
+      
+      height: 90px;
+      width: 100%;
+      max-width: 936px;
+      box-sizing: border-box;
+      padding: 0px;
+    }
+
+    #content {
+      width: 100%;
+      max-width: 700px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+
+    #urlForm {
+      position: fixed;
+      top: 90px;
+      width: 895px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 0px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    label,
+    input[type="text"],
+    input[type="button"] {
+      width: 100%;
+      display: block;
+      margin-bottom: 0px;
+      box-sizing: border-box;
+    }
+
+    label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #007bff;
+    }
+
+    input[type="button"] {
+      padding: 12px 0;
+      border: none;
+      background-color: #007bff;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    input[type="button"]:hover {
+      background-color: #0056b3;
+    }
+    #guia {
+      width: 853px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .ip-info {
+      display: flex;
+      align-items: center;
+    }
+
+    .flag {
+      width: 30px; /* Ajusta el tamaño de la bandera según sea necesario */
+      margin-right: 10px;
+    }
+
+    /* Nuevos estilos para el botón de pegar */
+    #pegarBoton {
+      border: none;
+      background-color: #007bff;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    #pegarBoton:hover {
+      background-color: #0056b3;
+    }
+
+
+    .input-group {
+      display: flex;
+      align-items: center;
+      margin: 0 auto;
+      padding: 0px;
+      padding-bottom: 5px;
+    }
+
+    .input-group input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      transition: border-color 0.3s;
+    }
+
+    .input-group button {
+      padding: 12px 20px;
+      margin-left: 10px;
+      border: none;
+      background-color: #007bff;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .input-group button:hover {
+      background-color: #0056b3;
+    }
+    /* Nuevos estilos para el botón de copiar */
+    #tablaResultados table button {
+      width: 100%;
+      height: 100%;
+      border: none;
+      color: #fff;
+      background: #007bff;
+      cursor: pointer;
+      padding: 10px; /* Ajusta el padding según sea necesario */
+    }
+
+    #tablaResultados table button:hover {
+      background-color: #065db9 /* Cambia el color de fondo al pasar el cursor */
+    }
+    /* Estilos para la tabla */
+    #tablaResultados table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    #tablaResultados th,
+    #tablaResultados td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+
+    #tablaResultados th {
+      background-color: #f2f2f2;
+      font-size: 12px; /* Ajusta el tamaño del texto de los títulos */
+    }
+
+    #tablaResultados td button {
+      border: none;
+      background-color: #007bff;
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    #tablaResultados td button:hover {
+      background-color: #0056b3;
+    }
+
+
+
+  </style>
+
+</head>
+<body>
+  <div id="header-wrapper"></div>
+  <form id="urlForm">
+    
+    <label for="videoUrl">Ingresa la URL de YouTube, Twitch o DailyMotion:</label>
+    <div class="input-group">
+      <input type="text" id="videoUrl" name="videoUrl" placeholder="Ejemplo: https://www.youtube.com/@bash/live">
+      <button type="button" id="pegarBoton" onclick="pegarURL()">Pegar URL</button>
+    </div>
+
+    
+    <input type="button" value="Generar URL" onclick="generarURL()">
+    <div id="tablaResultados"></div>
+    <p></p>
+    <div id="guia">
+      <h3>Guia de uso:</h3>
+      <p>Una vez que hayas ingresado la URL del canal de YouTube, Twitch o DailyMotion, simplemente haz clic en el boton 'Generar URL'.</p>
+      <p>Para agregar un canal de streaming a tu lista de IPTV, deberas ingresarlo de la siguiente forma:</p>
+      <p>YouTube: https://bash.48f948c322.repl.co/?url=https://www.youtube.com/@bash/live</p>
+      <p>Twitch: https://bash.48f948c322.repl.co/?url=https://www.twitch.tv/bash</p>
+      <p>DailyMotion: https://bash.48f948c322.repl.co/?url=https://www.dailymotion.com/bash</p>
+      <p>Es importante tener en cuenta que YouTube puede tener restricciones geograficas en ciertos streams, lo que significa que en ocasiones no podras ver el contenido debido a la ubicacion del servidor en EE. UU.</p>
+      <h3>Instalar:</h3>
+      <p>1.Python: pip install python</p>
+      <p>2.Streamlink: pip install streamlink</p>
+      <p>3.Memcached: pip install python-memcached</p>
+      <h3>Direccion IP del servidor replit:</h3>
+      <div class="ip-info">
+      <img class="flag" src="https://upload.wikimedia.org/wikipedia/en/thumb/a/a4/Flag_of_the_United_States.svg/255px-Flag_of_the_United_States.svg.png" alt="Flag">
+      <p id="ip"></p>
+
+    </div>
+
+  </form>
+
+<script>
+  function generarURL() {
+    var videoUrl = document.getElementById("videoUrl").value.toLowerCase();
+    var baseUrl = window.location.origin + "/?url=";
+    var finalUrl = "";
+    var Plataforma = "";
+
+    if (videoUrl.includes("youtube.com")) {
+      var channel = videoUrl.split("/").pop(); // Obtener la parte final de la URL (nombre del canal o video)
+      finalUrl = baseUrl + "https://www.youtube.com/" + channel + "/live";
+      Plataforma = "YouTube";
+    } else if (videoUrl.includes("twitch.tv") || videoUrl.includes("dailymotion.com")) {
+      finalUrl = baseUrl + videoUrl;
+      Plataforma = videoUrl.includes("twitch.tv") ? "Twitch" : "DailyMotion";
+    } else {
+      alert("Por favor, ingresa una URL válida de YouTube, Twitch o DailyMotion.");
+      return;
+    }
+
+    var tablaResultados = document.getElementById("tablaResultados");
+
+    var tabla = '<table border="1">' +
+      '<tr>' +
+      '<th>Plataforma</th>' +
+      '<th>URL</th>' +
+      '<th>Accion</th>' + // Nuevo encabezado para los botones
+      '<th>Accion</th>' + // Nueva columna
+      '</tr>' +
+      '<tr>' +
+      '<td>' + Plataforma + '</td>' +
+      '<td>' + finalUrl + '</td>' +
+      '<td>' +
+      '<button type="button" onclick="copiarURL(\'' + finalUrl + '\')">Copiar</button>' + // Botón copiar URL
+      '</td>' +
+      '</td>' +
+      '<td>' +
+      '<button type="button" onclick="abrirURL(\'' + finalUrl + '\')">Abrir</button>' + // Botón abrir URL
+      '</td>' +
+      '</tr>' +
+      '</table>';
+
+    tablaResultados.innerHTML = tabla;
+  }
+
+  function copiarURL(url) {
+    navigator.clipboard.writeText(url).then(function() {
+      // Elimina esta línea que muestra la alerta
+      // alert("URL copiada al portapapeles");
+    }, function(err) {
+      console.error('No se pudo copiar la URL', err);
+    });
+  }
+</script>
+  <script>
+    $(document).ready(function() {
+      $.getJSON("https://api64.ipify.org?format=json", function(data) {
+        var ipAddress = data.ip;
+        document.getElementById("ip").innerText = ipAddress;
+      });
+    });
+  </script>
+  <script>
+    function abrirURL(url) {
+      window.open(url, '_blank');
+    }
+  </script>
+  <script>
+    // Función para pegar la URL automáticamente
+    function pegarURL() {
+      navigator.clipboard.readText().then(text => {
+        var videoUrl = text.toLowerCase(); // Convertir a minúsculas para hacer comparaciones sin distinción de mayúsculas
+
+        if (videoUrl.includes("youtube.com") || videoUrl.includes("twitch.tv") || videoUrl.includes("dailymotion.com")) {
+          document.getElementById('videoUrl').value = text;
+        } else {
+          alert("Por favor, ingresa una URL valida de YouTube, Twitch o DailyMotion.");
+        }
+      }).catch(err => {
+        console.error('No se pudo leer el portapapeles', err);
+      });
+    }
+  </script>
+  
+  <script>
+    document.getElementById('videoUrl').addEventListener('input', function() {
+      var videoUrl = this.value.toLowerCase(); // Obtener el valor del campo y convertirlo a minúsculas para hacer comparaciones sin distinción de mayúsculas
+
+      var validUrls = ["youtube.com", "twitch.tv", "dailymotion.com"];
+
+      var isValid = validUrls.some(function(url) {
+        return videoUrl.includes(url);
+      });
+
+      if (!isValid) {
+        alert("Por favor, ingresa una URL valida de YouTube, Twitch o DailyMotion.");
+        this.value = ''; // Limpiar el campo si la URL no es valida
+      }
+    });
+  </script>
+</body>
+</html>
